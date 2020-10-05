@@ -14,10 +14,10 @@ var svgHeight = 660;
 
 // Define the margins as an object
 var margin = {
-  top: 30,
+  top: 20,
   right: 30,
-  bottom: 30,
-  left: 30
+  bottom: 80,
+  left: 100
 };
 
 // Define dimensions of the chart area
@@ -36,33 +36,48 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Load data from data.csv
-d3.csv("data.csv").then(function(data){;
+d3.csv("data.csv").then(function(riskData){;
   // Print the Data
-  console.log(data);
+  console.log(riskData);
 });
 
 // Step 1: Parse Data/ Cast as numbers
-  data.forEach(function(data){
+  riskData.forEach(function(data){
     data.smokes= +data.smokes;
     data.age= +data.age;
   });
 
 // Step 2: Create scale functions
   var xLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(data, d => d.smokes)])
+    .domain([0, d3.max(riskData, d => d.smokes)])
     .range([0, width]);
   
   var yLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(data, d => d.age)])
+    .domain([0, d3.max(riskData, d => d.age)])
     .range([height, 0]);    
 
 // Step 3: Create axis functions
-
+  var bottomAxis = d3.axisBottom(xLinearScale);
+  var leftAxis = d3.axisLeft(yLinearScale);
 
 // Step 4: Append Axis to the chart
+  chartGroup.append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(bottomAxis);
 
+    chartGroup.append("g")  
+    .call(leftAxis);
 
 // Step 5:Create Cirlces
+    var circlesGroup = chartGroup.selectAll("circle")
+    .data(riskData)
+    .enter()
+    .append("circle")
+    .attr("cx", d => xLinearScale(d.smokes))
+    .attr("cy", d => yLinearScale(d.age))
+    .attr("r", "15")
+    .attr("fill", "green")
+    .attr("opacity", ".5");
 
 
 // Step 6: Initialize tool tip
