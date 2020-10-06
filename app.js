@@ -8,6 +8,12 @@
 // Note: You'll need to use `python -m http.server` to run the visualization. This will host the page at `localhost:8000` in your web browser.
 // id,state,abbr,poverty,povertyMoe,age,ageMoe,income,incomeMoe,healthcare,healthcareLow,healthcareHigh,obesity,obesityLow,obesityHigh,smokes,smokesLow,smokesHigh,-0.385218228
 
+// function makeResponsive() {
+//   var svgArea= d3.select("body").select("svg");
+//   if(!svgArea.empty()){
+//     svgArea.remove();
+//   }
+
 // Define SVG area dimensions
 var svgWidth = 960;
 var svgHeight = 660;
@@ -30,6 +36,7 @@ var svg = d3.select("#scatter")
   .attr("height", svgHeight)
   .attr("width", svgWidth);
 
+
 // Append a group to the SVG area and shift ('translate') it to the right and down to adhere
 // to the margins set in the "chartMargin" object.
 var chartGroup = svg.append("g")
@@ -49,11 +56,11 @@ d3.csv("data.csv").then(function(riskData){
 
 // Step 2: Create scale functions
   var xLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(riskData, d => d.smokes)+2])
+    .domain([d3.min(riskData, d => d.smokes)-2, d3.max(riskData, d => d.smokes)+2])
     .range([0, width]);
   
   var yLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(riskData, d => d.age)+2])
+    .domain([d3.min(riskData, d => d.age)-2, d3.max(riskData, d => d.age)+2])
     .range([height, 0]);    
 
 // Step 3: Create axis functions
@@ -76,53 +83,53 @@ d3.csv("data.csv").then(function(riskData){
     .attr("cx", d => xLinearScale(d.smokes))
     .attr("cy", d => yLinearScale(d.age))
     .attr("r", "10")
-    .attr("fill", "green")
-    .attr("opacity", ".75")
+    .attr("fill", "teal")
+    .attr("opacity", ".8")
     .attr('class', 'stateCircle')
     .attr('stroke', 'black');
 
 
 // Step 6: Initialize tool tip
-  var toolTip = d3.select("body").append("div")
+  var toolTip = d3.tip()
     .attr("class", "toolTip")
-    .offset([80, 800])
+    .offset([80, -80])
     .html(function(d){
-      return (`Smokes${d.smokes} <br>Smokes: ${d.age}<age>`);
+      return (`${d.state}<br>Smokes:${d.smokes} <br>Age: ${d.age}`);
     });
 
 // Step 7: Create tooltop in the chart
     chartGroup.call(toolTip);
 
 // Step 8: Create event listeners to display and hide the tooltip
-    circlesGroup.on("mouseOver", function(data){
+    circlesGroup.on("click", function(data){
       toolTip.show(data, this);
     })
 
-    .on("mouseout", function(data,index){
+    .on("mouseOut", function(data,index){
       toolTip.hide(data);
     });
 
     // Create axis labels
     chartGroup.append("text")
       .attr("transform", "rotate(-90)")
-      .attr("y", 0 - margin.left + 100)
+      .attr("y", 0 - margin.left + 40)
       .attr("x", 0 - (height /2))
       .attr("dy", "1em")
       .attr("class", "axisText")
-      .text("this is a title");
+      .text("Age (Median)");
 
     chartGroup.append("text")
       .attr("transform", `translate(${width/2}, ${height + margin.top +30})`)
       .attr("class", "axisText")
-      .text("another title")
-      .catch(function(error) {
+      .text("Smokes %")
+   }) .catch(function(error) {
     console.log(error);
   });
-});
-  makeResponsive();
-  d3.select(window).on("resize", makeResponsive);
 
+//   makeResponsive();
+//   d3.select(window).on("resize", makeResponsive);
 
+// };
 
 
 
