@@ -16,7 +16,7 @@ var svgHeight = 660;
 var margin = {
   top: 20,
   right: 30,
-  bottom: 80,
+  bottom: 125,
   left: 100
 };
 
@@ -36,10 +36,10 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Load data from data.csv
-d3.csv("data.csv").then(function(riskData){;
+d3.csv("data.csv").then(function(riskData){
   // Print the Data
   console.log(riskData);
-});
+
 
 // Step 1: Parse Data/ Cast as numbers
   riskData.forEach(function(data){
@@ -49,11 +49,11 @@ d3.csv("data.csv").then(function(riskData){;
 
 // Step 2: Create scale functions
   var xLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(riskData, d => d.smokes)])
+    .domain([0, d3.max(riskData, d => d.smokes)+2])
     .range([0, width]);
   
   var yLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(riskData, d => d.age)])
+    .domain([0, d3.max(riskData, d => d.age)+2])
     .range([height, 0]);    
 
 // Step 3: Create axis functions
@@ -75,18 +75,55 @@ d3.csv("data.csv").then(function(riskData){;
     .append("circle")
     .attr("cx", d => xLinearScale(d.smokes))
     .attr("cy", d => yLinearScale(d.age))
-    .attr("r", "15")
+    .attr("r", "10")
     .attr("fill", "green")
-    .attr("opacity", ".5");
+    .attr("opacity", ".75")
+    .attr('class', 'stateCircle')
+    .attr('stroke', 'black');
 
 
 // Step 6: Initialize tool tip
-
+  var toolTip = d3.select("body").append("div")
+    .attr("class", "toolTip")
+    .offset([80, 800])
+    .html(function(d){
+      return (`Smokes${d.smokes} <br>Smokes: ${d.age}<age>`);
+    });
 
 // Step 7: Create tooltop in the chart
-
+    chartGroup.call(toolTip);
 
 // Step 8: Create event listeners to display and hide the tooltip
+    circlesGroup.on("mouseOver", function(data){
+      toolTip.show(data, this);
+    })
+
+    .on("mouseout", function(data,index){
+      toolTip.hide(data);
+    });
+
+    // Create axis labels
+    chartGroup.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left + 100)
+      .attr("x", 0 - (height /2))
+      .attr("dy", "1em")
+      .attr("class", "axisText")
+      .text("this is a title");
+
+    chartGroup.append("text")
+      .attr("transform", `translate(${width/2}, ${height + margin.top +30})`)
+      .attr("class", "axisText")
+      .text("another title")
+      .catch(function(error) {
+    console.log(error);
+  });
+});
+  makeResponsive();
+  d3.select(window).on("resize", makeResponsive);
+
+
+
 
 
 
