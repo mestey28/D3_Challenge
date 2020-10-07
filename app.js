@@ -85,27 +85,48 @@ d3.csv("data.csv").then(function(riskData){
     .attr("r", "10")
     .attr("fill", "teal")
     .attr("opacity", ".8")
-    .attr('class', 'stateCircle')
-    .attr('stroke', 'black');
+    .attr('class', 'stateCircle');
+    // .on('mouseover', tip.show)
+    // .on('mouseout', tip.hide);
+
+  // append initial state labels inside circles
+    var text = chartGroup.selectAll(".stateText")
+      .data(riskData)
+      .enter()
+      .append("text")
+      .classed("stateText", true);
+
+
+      // .text(d=>(d.abbr));
+      // .attr("cx", d => xLinearScale(d.smokes))
+      // .attr("cy", d => yLinearScale(d.age))
+      // .attr('class', 'stateText');
+  
+    var textLabels = text
+    .attr("x", d => xLinearScale(d.smokes]))
+    .attr("y", d => yLinearScale(d.age))
+    .attr("alignment-baseline", "middle")
+    .attr("text-anchor", "middle")
+    .text(d => d.abbr);  
 
 
 // Step 6: Initialize tool tip
   var toolTip = d3.tip()
     .attr("class", "toolTip")
-    .offset([80, -80])
+    .offset([80, -60])
     .html(function(d){
-      return (`${d.state}<br>Smokes:${d.smokes} <br>Age: ${d.age}`);
+      return (`${d.state}<hr><br>Smokes:${d.smokes} <br>Age: ${d.age}`);
     });
 
 // Step 7: Create tooltop in the chart
     chartGroup.call(toolTip);
 
 // Step 8: Create event listeners to display and hide the tooltip
-    circlesGroup.on("click", function(data){
+    circlesGroup.on("mouseover", function(data){
       toolTip.show(data, this);
     })
 
-    .on("mouseOut", function(data,index){
+    .on("mouseout", function(data){
       toolTip.hide(data);
     });
 
