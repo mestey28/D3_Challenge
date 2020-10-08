@@ -82,32 +82,35 @@ d3.csv("data.csv").then(function(riskData){
     .append("circle")
     .attr("cx", d => xLinearScale(d.smokes))
     .attr("cy", d => yLinearScale(d.age))
-    .attr("r", "10")
-    .attr("fill", "teal")
-    .attr("opacity", ".8")
+    .attr("r", "15")
+    .attr("opacity", ".5")
     .attr('class', 'stateCircle');
-    // .on('mouseover', tip.show)
-    // .on('mouseout', tip.hide);
-
-  // append initial state labels inside circles
-    var text = chartGroup.selectAll(".stateText")
-      .data(riskData)
-      .enter()
-      .append("text")
-      .classed("stateText", true);
 
 
-      // .text(d=>(d.abbr));
-      // .attr("cx", d => xLinearScale(d.smokes))
-      // .attr("cy", d => yLinearScale(d.age))
-      // .attr('class', 'stateText');
+//   // append initial state labels inside circles
+//     var circleLabels = chartGroup.selectAll("null")
+//       .data(riskData)
+//       .enter()
+//       .append("text");
+
+//       circleLabels
+//       .attr("x", d => xLinearScale(d.smokes))
+//       .attr("y", d => yLinearScale(d.age))
+//       .text(d=> (d.abbr)
+//       .style("font-size", "11px")
+//       .style('text-anchor', "middle")
+//       .attr('class', 'stateText')
+// });
   
-    var textLabels = text
-    .attr("x", d => xLinearScale(d.smokes]))
-    .attr("y", d => yLinearScale(d.age))
-    .attr("alignment-baseline", "middle")
-    .attr("text-anchor", "middle")
-    .text(d => d.abbr);  
+    // var textLabels = text
+    //   .attr("x", d => xLinearScale(d.smokes]))
+    //   .attr("y", d => yLinearScale(d.age))
+    //   .text(d => d.abbr)
+    //   .attr("alignment-baseline", "middle")
+    //   .attr("text-anchor", "middle")
+    //   ;  
+
+    // return textLabels;
 
 
 // Step 6: Initialize tool tip
@@ -147,10 +150,8 @@ d3.csv("data.csv").then(function(riskData){
     console.log(error);
   });
 
-//   makeResponsive();
-//   d3.select(window).on("resize", makeResponsive);
 
-// };
+
 
 
 
