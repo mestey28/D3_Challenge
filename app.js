@@ -76,7 +76,7 @@ d3.csv("data.csv").then(function(riskData){
     .call(leftAxis);
 
 // Step 5:Create Cirlces
-    var circlesGroup = chartGroup.selectAll("circle")
+    var circlesGroup = chartGroup.append("g").selectAll("circle")
     .data(riskData)
     .enter()
     .append("circle")
@@ -86,31 +86,23 @@ d3.csv("data.csv").then(function(riskData){
     .attr("opacity", ".5")
     .attr('class', 'stateCircle');
 
+    texts = chartGroup.append("g").selectAll("text")
+    .data(riskData)
+    .enter()
+    .append('text')
+    .attr("x", d => xLinearScale(d.smokes))
+    .attr("y", d => yLinearScale(d.age))
+    .attr("circle", "right")
+    .text(function(d) {
+      return d.abbr;
+    })
+    .attr("font-family", "arial")
+    .attr("font-size", "11px")
+    .style('text-anchor', "middle")
+    .attr("fill", "black");    
 
-//   // append initial state labels inside circles
-//     var circleLabels = chartGroup.selectAll("null")
-//       .data(riskData)
-//       .enter()
-//       .append("text");
 
-//       circleLabels
-//       .attr("x", d => xLinearScale(d.smokes))
-//       .attr("y", d => yLinearScale(d.age))
-//       .text(d=> (d.abbr)
-//       .style("font-size", "11px")
-//       .style('text-anchor', "middle")
-//       .attr('class', 'stateText')
-// });
-  
-    // var textLabels = text
-    //   .attr("x", d => xLinearScale(d.smokes]))
-    //   .attr("y", d => yLinearScale(d.age))
-    //   .text(d => d.abbr)
-    //   .attr("alignment-baseline", "middle")
-    //   .attr("text-anchor", "middle")
-    //   ;  
 
-    // return textLabels;
 
 
 // Step 6: Initialize tool tip
@@ -146,9 +138,11 @@ d3.csv("data.csv").then(function(riskData){
       .attr("transform", `translate(${width/2}, ${height + margin.top +30})`)
       .attr("class", "axisText")
       .text("Smokes %")
-   }) .catch(function(error) {
+  }).catch(function(error) {
     console.log(error);
   });
+
+
 
 
 
